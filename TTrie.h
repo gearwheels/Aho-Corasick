@@ -59,7 +59,7 @@ TTrieNode* TTrieNode::CreateChilde(const std::string simbol){
 }
 
 void TTrieNode::nonTerminal(unsigned long long numStr, unsigned long long len){
-    if (this->children.find(TERMINAL) == this->children.end()){ // если нет терм символа создаем его 
+    if (this->children.find(TERMINAL) == this->children.end()){ 
         std::pair<std::string, TTrieNode *> tmpPair = std::make_pair(TERMINAL,new TTrieNode);
         std::pair<unsigned long long, unsigned long long> *tmpPairInt = new std::pair<unsigned long long, unsigned long long>;
         *tmpPairInt = std::make_pair(numStr, len);
@@ -101,45 +101,42 @@ void TTrie::Create(const std::string &symbols){
 
     std::unordered_map<std::string, TTrieNode *>::iterator iter;
 
-    if (this->itTTrie->children.empty()){ // если нода пуста то добавляем к ней в дети входящий символы 
+    if (this->itTTrie->children.empty()){ 
         this->itTTrie = itTTrie->CreateChilde(symbols); 
     }else{
         iter = this->itTTrie->children.find(symbols);
-        if (iter != this->itTTrie->children.end()){ // если в табл детей нашли ребенка с такими же символами  
+        if (iter != this->itTTrie->children.end()){   
         itTTrie = iter->second;
-            // то переставляем итератор на него 
-        }else{ // иначе добавляем ребенка и переводим итератор на него 
+            
+        }else{ 
             this->itTTrie = itTTrie->CreateChilde(symbols);
         }
     }
 }
 bool TTrie::Go(const std::string &symbols){
     std::unordered_map<std::string, TTrieNode *>::iterator iter;
-    if(!this->itTTrie->children.empty()){// если есть дети 
-        iter = this->itTTrie->children.find(symbols); //ищем строку переданную в ф-ию 
-        if (iter != this->itTTrie->children.end()){ // если находим
-            itTTrie = iter->second; // передвигаем итератор на нее 
-        }else{ // если нет такой строки 
-            // то нужно передвинуть итератор на linkfail 
-            while (iter == this->itTTrie->children.end() && itTTrie != this->root){ // проходим по всем linkFail либо находим заданную строку либо доходим до корня
+    if(!this->itTTrie->children.empty()){ 
+        iter = this->itTTrie->children.find(symbols);
+        if (iter != this->itTTrie->children.end()){ 
+            itTTrie = iter->second;
+        }else{  
+            while (iter == this->itTTrie->children.end() && itTTrie != this->root){ 
                 itTTrie = itTTrie->linkFail;
                 iter = this->itTTrie->children.find(symbols);
             }
-            if (iter != this->itTTrie->children.end()){ // 1) находим заданный символ
-                itTTrie = iter->second; // передвигаем итератор на него
-            }else if (itTTrie == this->root){ // 2) доходим до корня
-                iter = this->itTTrie->children.find(symbols); // ищем в нем заданный символ
-                if (iter != this->itTTrie->children.end()){ //  находим заданный символ
-                    itTTrie = iter->second; // передвигаем итератор на него
+            if (iter != this->itTTrie->children.end()){ 
+                itTTrie = iter->second; 
+            }else if (itTTrie == this->root){ 
+                iter = this->itTTrie->children.find(symbols); 
+                if (iter != this->itTTrie->children.end()){ 
+                    itTTrie = iter->second; 
                 }
             }
         }
-    }else{ // если нет детей, хотя  скорее всего будет хотя бы $
-        // можно поставить итератор на linkfail
+    }else{ 
         if(itTTrie->linkFail) {
             itTTrie = itTTrie->linkFail;
-        } // если itTTrie->linkFail == nullptr значит это либо корень 
-        // либо $ но его мы не сможем получить т к он не из словаря 
+        } 
     }
     if (itTTrie == this->root){
         return false;
@@ -152,17 +149,16 @@ void TTrie::Answer(const std::vector<std::pair<unsigned long long int, unsigned 
     auto itTTrie1 = this->itTTrie;
     while (itTTrie1){
         iter = itTTrie1->children.find(TERMINAL);
-        if(iter == itTTrie1->children.end()){ // если итератор на последней букве слова и эта буква не является терминальной вершиной
+        if(iter == itTTrie1->children.end()){ 
             itTTrie1 = itTTrie1->exitPoint;
             continue;
         }
         auto ptrVec = strWordVec.end();
-        --ptrVec;// итератор на вектор номер строки и коичество слов 
+        --ptrVec;
         unsigned long long pattLen = iter->second->numLengt->second;
-        while (ptrVec->second < pattLen){ // пока взятый нами член вектора
-            // по второму полю (кол во слов в строке) меньше длины паттерна 
-            pattLen -= ptrVec->second; //отнимаем длину строки от длины патерна 
-            ptrVec--; // перемещаем итератор назад 
+        while (ptrVec->second < pattLen){ 
+            pattLen -= ptrVec->second; 
+            ptrVec--; 
         }
         auto namberWord = ptrVec->second;
         namberWord -= pattLen - 1;
@@ -173,7 +169,7 @@ void TTrie::Answer(const std::vector<std::pair<unsigned long long int, unsigned 
 
 void TTrie::Search(const std::vector<std::pair<unsigned long long int, unsigned long long int>> &strWordVec, const std::string &symbols){
     std::unordered_map<std::string, TTrieNode *>::iterator iter;
-    if (Go(symbols)){ // если Go true то itTTrie != root 
+    if (Go(symbols)){ 
         this->Answer(strWordVec, iter);
     }
 }
@@ -182,45 +178,44 @@ void TTrie::Search(const std::vector<std::pair<unsigned long long int, unsigned 
 void TTrie::CreateLinks(){
     TTrieNode *tmpNode = root;
     std::queue<TTrieNode *> queue;
-    for (auto it = this->root->children.begin(); it != this->root->children.end(); it++){ // инициализирунм очередь первыми членами бора
+    for (auto it = this->root->children.begin(); it != this->root->children.end(); it++){ 
         queue.push(it->second);
         it->second->linkFail = root; 
     }
-    while (!queue.empty()) {// проходим по очереди
+    while (!queue.empty()) {
         tmpNode = queue.front();
         queue.pop();
-        std::unordered_map<std::string, TTrieNode *>::iterator iter; // итератор для прохода по unordered_map 
+        std::unordered_map<std::string, TTrieNode *>::iterator iter; 
         for (iter = tmpNode->children.begin(); iter != tmpNode->children.end(); ++iter) {
-            TTrieNode *child = iter->second; // узел ребенка 
-            TTrieNode *parentFail = tmpNode->linkFail; // узел на который ссылкой неудач указывает родительский узел 
-            std::string childsymbols = iter->first; // символ узла ребенка 
+            TTrieNode *child = iter->second;
+            TTrieNode *parentFail = tmpNode->linkFail; 
+            std::string childsymbols = iter->first; 
             queue.push(child);
-            while (true){ // смотрим ссылки неудач и точки выходов узлов с идентичным символом
+            while (true){ 
                 if (childsymbols != TERMINAL){
-                    std::unordered_map<std::string, TTrieNode *>::iterator existingNode = parentFail->children.find(childsymbols); // проверяем есть ли символ ребенка в родительской ссылке неудач
-                    if(existingNode != parentFail->children.end()){ // если есть 
-                        if (existingNode->second != child){ // если это не тот же самый узел 
-                            child->linkFail = existingNode->second; // делаем ссылку неудач на него
-                            if (existingNode->second->children.find(TERMINAL) != existingNode->second->children.end()){ // проверяем не является ли найденый символ концом слова
-                                child->exitPoint = existingNode->second; // если является делаем ссылку выхода на него
-                            }else{ // если не является концом слова
-                                if (existingNode->second->exitPoint){ // проверяем есть ли у него ссылка на конец слова
-                                    child->exitPoint = existingNode->second->exitPoint;// если есть ссылаемся на нее
+                    std::unordered_map<std::string, TTrieNode *>::iterator existingNode = parentFail->children.find(childsymbols); 
+                    if(existingNode != parentFail->children.end()){ 
+                        if (existingNode->second != child){
+                            child->linkFail = existingNode->second; 
+                            if (existingNode->second->children.find(TERMINAL) != existingNode->second->children.end()){ 
+                                child->exitPoint = existingNode->second; 
+                            }else{
+                                if (existingNode->second->exitPoint){ 
+                                    child->exitPoint = existingNode->second->exitPoint;
                                 }
                             }
-                        }else{ // если это тот же самый узел 
-                            child->linkFail = root; // делаем ссылку неудач на корень 
+                        }else{ 
+                            child->linkFail = root; 
                         }
                         break;
                     }
                 }else{
                     break;
                 }
-                if (parentFail == root) { // если ссылка неудач родителя была на корень 
-                    child->linkFail = root; // делаем ссылку неудач ребенка на корень 
+                if (parentFail == root) { 
+                    child->linkFail = root; 
                     break;
-                } else { // иначе переходим по ссылке неудач родителя и ищем символ ребенка там
-                    // это происходит если мы не нашли символ ребенка в детях по ссылке неудач и при этом у родителя есть активная ссылка (не nullptr) неудач
+                } else { 
                     parentFail = parentFail->linkFail;
                 }
             }

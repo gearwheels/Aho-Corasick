@@ -11,12 +11,12 @@ int main(){
     char c = tolower(getchar());
     memset(buff, 0, MAX_WORD_SIZE);
     while (c > 0) { 
-        while (c == '\t' || c == ' '){ // считываем все разделители до первого символа включительно
+        while (c == '\t' || c == ' '){ 
             space = true;
             c = tolower(getchar());
         }
         i = 0;
-        while(c >= 'a' && c <='z'){ //считываем слово до разделителя включительно
+        while(c >= 'a' && c <='z'){ 
             space = false;
             buff[i] = c;
             ++i;
@@ -39,7 +39,7 @@ int main(){
             }
             trie.GetIter()->nonTerminal(numStr, len);
             memset(buff, 0, MAX_WORD_SIZE);
-            trie.ResetItTTrie();// сброс итератора (поставить его на root)
+            trie.ResetItTTrie();
             len = 1;
             c = tolower(getchar());
             if (c == '\n') {
@@ -65,27 +65,27 @@ int main(){
     c = tolower(getchar());
 
     while (c > 0) { 
-        while (c == '\t' || c == ' '){ // считываем все разделители до первого символа включительно
+        while (c == '\t' || c == ' '){ 
             space = true;
             c = tolower(getchar());
         }
         i = 0;
-        while(c >= 'a' && c <='z'){ //считываем слово до разделителя включительно
+        while(c >= 'a' && c <='z'){ 
             space = false;
             buff[i] = c;
             ++i;
             c = tolower(getchar());
         }
-        if (c == '\t' || c == ' '){ // если после слова идет пробел 
+        if (c == '\t' || c == ' '){ 
             space = true;
-            if(buff[0] != '\0'){ // если слово не пустое
-                ++strWordVec.back().second; // счетчик слов в строке
+            if(buff[0] != '\0'){ 
+                ++strWordVec.back().second; 
                 trie.Search(strWordVec, buff); // поиск
                 memset(buff, 0, MAX_WORD_SIZE);
             }
         }else if (c == '\n'){
             if(buff[0] != '\0'){ 
-                if (!space){ // проверка был ли перед \n пробел если не было 
+                if (!space){  
                     ++strWordVec.back().second; // счетчик слов в строке
                 }
                 trie.Search(strWordVec, buff);// поиск
